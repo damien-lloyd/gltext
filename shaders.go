@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package v45
+package gltext
 
 import (
 	"errors"
 	"fmt"
-	"github.com/go-gl/gl/v4.5-core/gl"
+	"github.com/go-gl/gl/all-core/gl"
 	"strings"
 )
 

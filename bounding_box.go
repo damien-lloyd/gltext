@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package v41
+package gltext
 
 import (
 	"fmt"
-	"github.com/4ydx/gltext"
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/gl/all-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -62,11 +61,11 @@ type BoundingBox struct {
 	eboIndexCount int
 
 	// X1, X2: the lower left and upper right points of a box that bounds the text
-	X1 gltext.Point
-	X2 gltext.Point
+	X1 Point
+	X2 Point
 }
 
-func loadBoundingBox(f *Font, X1 gltext.Point, X2 gltext.Point) (b *BoundingBox, err error) {
+func loadBoundingBox(f *Font, X1 Point, X2 Point) (b *BoundingBox, err error) {
 	b = new(BoundingBox)
 	b.font = f
 
@@ -83,8 +82,8 @@ func loadBoundingBox(f *Font, X1 gltext.Point, X2 gltext.Point) (b *BoundingBox,
 	b.eboData = make([]int32, b.eboIndexCount, b.eboIndexCount)
 	b.makeBufferData(X1, X2)
 
-	if gltext.IsDebug {
-		prefix := gltext.DebugPrefix()
+	if IsDebug {
+		prefix := DebugPrefix()
 		fmt.Printf("%s bounding %v %v\n", prefix, X1, X2)
 		fmt.Printf("%s bounding vbo data\n%v\n", prefix, b.vboData)
 		fmt.Printf("%s bounding ebo data\n%v\n", prefix, b.eboData)
@@ -152,7 +151,7 @@ func (b *BoundingBox) Draw() {
 	gl.BindVertexArray(0)
 }
 
-func (b *BoundingBox) makeBufferData(X1, X2 gltext.Point) {
+func (b *BoundingBox) makeBufferData(X1, X2 Point) {
 	// counter-clockwise quad
 
 	// index (0,0)

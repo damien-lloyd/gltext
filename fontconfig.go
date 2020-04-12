@@ -13,7 +13,6 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 // Direction represents the direction in which strings should be rendered.
@@ -48,12 +47,12 @@ func (fc *FontConfig) Load(rootPath string) (err error) {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", time.Now())
+	//fmt.Printf("%+v\n", time.Now())
 	fc.Image, err = LoadFontImage(rootPath, fc.Name)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", time.Now())
+	//fmt.Printf("%+v\n", time.Now())
 	fc.Glyphs.Scale(1)
 	return nil
 }

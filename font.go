@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package v41
+package gltext
 
 import (
-	"github.com/4ydx/gltext"
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/gl/all-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"image"
 )
@@ -55,11 +54,11 @@ void main() {
 ` + "\x00"
 
 type Font struct {
-	Config         *gltext.FontConfig // Character set for this font.
-	textureID      uint32             // Holds the glyph texture id.
-	maxGlyphWidth  int                // Largest glyph width.
-	maxGlyphHeight int                // Largest glyph height.
-	program        uint32             // program compiled from shaders
+	Config         *FontConfig // Character set for this font.
+	textureID      uint32      // Holds the glyph texture id.
+	maxGlyphWidth  int         // Largest glyph width.
+	maxGlyphHeight int         // Largest glyph height.
+	program        uint32      // program compiled from shaders
 
 	// attributes
 	centeredPositionAttribute uint32 // vertex centered_position required for scaling around the orthographic projections center
@@ -96,7 +95,7 @@ func (f *Font) GetTextureHeight() float32 {
 	return f.textureHeight
 }
 
-func NewFont(config *gltext.FontConfig) (f *Font, err error) {
+func NewFont(config *FontConfig) (f *Font, err error) {
 	if config == nil {
 		panic("Nil config")
 	}
@@ -104,7 +103,7 @@ func NewFont(config *gltext.FontConfig) (f *Font, err error) {
 	f.Config = config
 
 	// Resize image to next power-of-two.
-	config.Image = gltext.Pow2Image(config.Image).(*image.NRGBA)
+	config.Image = Pow2Image(config.Image).(*image.NRGBA)
 	ib := config.Image.Bounds()
 
 	f.textureWidth = float32(ib.Dx())
@@ -120,8 +119,8 @@ func NewFont(config *gltext.FontConfig) (f *Font, err error) {
 	}
 
 	// save to disk for testing
-	if gltext.IsDebug {
-		err = gltext.SaveImage(".", "Debug", config.Image)
+	if IsDebug {
+		err = SaveImage(".", "Debug", config.Image)
 		if err != nil {
 			return f, err
 		}
@@ -169,7 +168,7 @@ func NewFont(config *gltext.FontConfig) (f *Font, err error) {
 func (f *Font) ResizeWindow(width float32, height float32) {
 	f.WindowWidth = width
 	f.WindowHeight = height
-	f.OrthographicMatrix = mgl32.Ortho2D(-f.WindowWidth/2, f.WindowWidth/2, -f.WindowHeight/2, f.WindowHeight/2)
+	f.OrthographicMatrix = mgl32.Ortho2D(0.0, f.WindowWidth, 0.0, f.WindowHeight)
 }
 
 func (f *Font) Release() {

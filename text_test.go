@@ -2,23 +2,22 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package v45
+package gltext
 
 import (
-	"github.com/4ydx/gltext"
 	"github.com/go-gl/mathgl/mgl32"
 	"testing"
 )
 
 func TestHasRune(t *testing.T) {
 	f := &Font{}
-	f.Config = &gltext.FontConfig{}
-	f.Config.Glyphs = make(gltext.Charset, 100)
-	f.Config.RuneRanges = make(gltext.RuneRanges, 0)
+	f.Config = &FontConfig{}
+	f.Config.Glyphs = make(Charset, 100)
+	f.Config.RuneRanges = make(RuneRanges, 0)
 
-	r := gltext.RuneRange{Low: 30, High: 40}
+	r := RuneRange{Low: 30, High: 40}
 	f.Config.RuneRanges = append(f.Config.RuneRanges, r)
-	r = gltext.RuneRange{Low: 100, High: 400}
+	r = RuneRange{Low: 100, High: 400}
 	f.Config.RuneRanges = append(f.Config.RuneRanges, r)
 
 	if !f.Config.RuneRanges.Validate() {
@@ -64,8 +63,8 @@ func TestClickedCharacter(t *testing.T) {
 
 func TestBoundingBox(t *testing.T) {
 	text := &Text{}
-	text.X1 = gltext.Point{-10, -10}
-	text.X2 = gltext.Point{+10, +10}
+	text.X1 = Point{-10, -10}
+	text.X2 = Point{+10, +10}
 	text.Font = &Font{}
 	v := mgl32.Vec2{10, 5}
 	text.SetPosition(v)

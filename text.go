@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package v45
+package gltext
 
 import (
 	"fmt"
-	"github.com/4ydx/gltext"
-	"github.com/go-gl/gl/v4.5-core/gl"
+	"github.com/go-gl/gl/all-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -63,9 +62,9 @@ type Text struct {
 	// X1, X2: the lower left and upper right points of a box that bounds the text with a center point (0,0)
 
 	// lower left
-	X1 gltext.Point
+	X1 Point
 	// upper right
-	X2 gltext.Point
+	X2 Point
 
 	// Screen position away from center
 	Position mgl32.Vec2
@@ -195,13 +194,13 @@ func (t *Text) SetString(fs string, argv ...interface{}) {
 
 	// generate the basic vbo data and bounding box
 	// center the vbo data around the orthographic (0,0) point
-	t.X1 = gltext.Point{0, 0}
-	t.X2 = gltext.Point{0, 0}
+	t.X1 = Point{0, 0}
+	t.X2 = Point{0, 0}
 	t.makeBufferData(indices)
 	t.centerTheData(t.getLowerLeft())
 
-	if gltext.IsDebug {
-		prefix := gltext.DebugPrefix()
+	if IsDebug {
+		prefix := DebugPrefix()
 		fmt.Printf("%s bounding box %v %v\n", prefix, t.X1, t.X2)
 		fmt.Printf("%s text vbo data\n%v\n", prefix, t.vboData)
 		fmt.Printf("%s text ebo data\n%v\n", prefix, t.eboData)
@@ -230,7 +229,7 @@ func (t *Text) SetString(fs string, argv ...interface{}) {
 // The block of text is positioned around the center of the screen, which in this case must
 // be considered (0,0).  This is necessary for orthographic projection and scaling to work
 // well together.  If the text is *not* at (0,0), then scaling doesnt produce a direct zoom effect.
-func (t *Text) getLowerLeft() (lowerLeft gltext.Point) {
+func (t *Text) getLowerLeft() (lowerLeft Point) {
 	lineWidthHalf := (t.X2.X - t.X1.X) / 2
 	lineHeightHalf := (t.X2.Y - t.X1.Y) / 2
 
@@ -245,14 +244,14 @@ func (t *Text) SetPosition(v mgl32.Vec2) {
 	// transform to orthographic coordinates ranged -1 to 1 for the shader
 	t.finalPosition[0] = v.X() / (t.Font.WindowWidth / 2)
 	t.finalPosition[1] = v.Y() / (t.Font.WindowHeight / 2)
-	if gltext.IsDebug {
+	if IsDebug {
 		t.BoundingBox.finalPosition[0] = v.X() / (t.Font.WindowWidth / 2)
 		t.BoundingBox.finalPosition[1] = v.Y() / (t.Font.WindowHeight / 2)
 	}
 	t.Position = v
 }
 
-func (t *Text) GetBoundingBox() (X1, X2 gltext.Point) {
+func (t *Text) GetBoundingBox() (X1, X2 Point) {
 	x, y := t.Position.X(), t.Position.Y()
 	X1.X = t.X1.X + x
 	X1.Y = t.X1.Y + y
@@ -262,7 +261,7 @@ func (t *Text) GetBoundingBox() (X1, X2 gltext.Point) {
 }
 
 func (t *Text) Draw() {
-	if gltext.IsDebug {
+	if IsDebug {
 		t.BoundingBox.Draw()
 	}
 	if t.FadeOutBegun {
@@ -322,7 +321,7 @@ func (t *Text) Hide() {
 // centerTheData prepares the value "centered_position" found in the font shader
 // as named, the function centers the text around the orthographic center of the screen
 // expected to only be called within SetString
-func (t *Text) centerTheData(lowerLeft gltext.Point) (err error) {
+func (t *Text) centerTheData(lowerLeft Point) (err error) {
 	length := len(t.vboData)
 	for index := 0; index < length; {
 		// index (0,0)
@@ -357,7 +356,7 @@ func (t *Text) centerTheData(lowerLeft gltext.Point) (err error) {
 	t.X2.Y += lowerLeft.Y
 
 	// prepare objects for drawing the bounding box
-	if gltext.IsDebug {
+	if IsDebug {
 		t.BoundingBox, err = loadBoundingBox(t.Font, t.X1, t.X2)
 	}
 	return
@@ -443,8 +442,8 @@ func (t *Text) makeBufferData(indices []rune) {
 	for i, r := range indices {
 		glyphIndex := t.Font.Config.RuneRanges.GetGlyphIndex(r)
 		if glyphIndex >= 0 {
-			if gltext.IsDebug {
-				prefix := gltext.DebugPrefix()
+			if IsDebug {
+				prefix := DebugPrefix()
 				fmt.Printf("%s png index %3d: %s rune %+v line at %f", prefix, glyphIndex, string(r), glyphs[glyphIndex], lineX)
 			}
 			advance := float32(glyphs[glyphIndex].Advance)
@@ -526,13 +525,13 @@ func (t *Text) makeBufferData(indices []rune) {
 
 			// shift to the right
 			lineX += advance
-			if gltext.IsDebug {
+			if IsDebug {
 				fmt.Printf("-> %f\n", lineX)
 			}
 		}
 	}
-	if gltext.IsDebug {
-		gltext.PrintVBO(t.vboData, t.Font.GetTextureHeight(), t.Font.GetTextureWidth())
+	if IsDebug {
+		PrintVBO(t.vboData, t.Font.GetTextureHeight(), t.Font.GetTextureWidth())
 	}
 	return
 }
