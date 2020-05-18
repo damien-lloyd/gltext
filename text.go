@@ -293,11 +293,19 @@ func (t *Text) Draw() {
 	if drawCount <= 0 {
 		return
 	}
+
+	// Allow text's texture to blend with background
 	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+	// Disable Z-Buffer so text is always at the front of everything
+	gl.Disable(gl.DEPTH_TEST)
 	gl.BindVertexArray(t.vao)
+
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.DrawElements(gl.TRIANGLES, drawCount, gl.UNSIGNED_INT, nil)
+
 	gl.BindVertexArray(0)
+	gl.Enable(gl.DEPTH_TEST)
 	gl.Disable(gl.BLEND)
 }
 
